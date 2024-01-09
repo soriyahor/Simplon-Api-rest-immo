@@ -1,0 +1,8 @@
+env/bin/python3.12
+env/bin/python3
+env/bin/python
+env/pyvenv.cfg
+env/lib64
+__pycache__/test.cpython-310.pyc
+__pycache__/main.cpython-310.pyc
+CUsersUtilisateurAppDataRoamingDBeaverDataworkspace6.metadatasample-database-sqlite-1Chinook.db
