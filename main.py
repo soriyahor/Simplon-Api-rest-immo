@@ -12,8 +12,7 @@ def execute_sql_query(con, query):
     cur = con.cursor()
     cur.execute(query)
     result = cur.fetchall()
-    print(query)
-    print(result)
+
     if result is None or len(result) == 0:
         raise HTTPException(status_code=400, detail='Aucune valeur')
     if len(result) == 1:
@@ -61,7 +60,6 @@ async def transaction_city(limit:int, city: str):
     query = f"SELECT * FROM transactions_sample WHERE UPPER(ville) LIKE UPPER('{city}%') ORDER BY date_transaction DESC LIMIT '{limit}';"
     return execute_sql_query(con, query)
 
-# year = validate_year(year)
 
 #3 En tant qu'Agent je souhaite connaitre le nombre d'acquisitions dans ma ville (Paris) durant l'année 2022
 
