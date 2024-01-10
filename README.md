@@ -59,3 +59,11 @@ async def revenu_fiscal_moyen(year: str = Depends(validate_year), city: str = ""
 
 uvicorn.run(app)"
 
+On va pouvoir tester sur des valeurs réelles d'une base de données.
+Pour cela, il faudra mettre le chemin d'accès dans main.py soit mettre sur le local avec le fichier 
+
+A récuperer sur dbeaver : clic droit sur la base de données -> editer connection -> copier le path ou le créer
+
+exemple:
+con = sqlite3.connect(r"C:\Users\Utilisateur\AppData\Roaming\DBeaverData\workspace6\.metadata\sample-database-sqlite-1\Chinook.db")
+con = sqlite3.connect('Chinook.db')
