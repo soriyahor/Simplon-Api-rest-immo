@@ -69,3 +69,10 @@ exemple:
 
 ` con = sqlite3.connect(r"C:\Users\Utilisateur\AppData\Roaming\DBeaverData\workspace6\.metadata\sample-database-sqlite-1\Chinook.db")
 con = sqlite3.connect('Chinook.db') `
+
+
+# En cas de reprise de code
+
+Il faut utiliser main.py avec Chinook.db (base de données)
+En utilisant le terminal WSL, il faut utiliser la commande uvicorn main:app --reload et cliquer sur ctrl+clic sur le lien 127.0.0.1:8000
+Il sera alors possible de tester sur le swagger les requêtes

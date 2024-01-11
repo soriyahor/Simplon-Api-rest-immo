@@ -12,7 +12,8 @@ def execute_sql_query(con, query):
     cur = con.cursor()
     cur.execute(query)
     result = cur.fetchall()
-
+    print(query)
+    print(result)
     if result is None or len(result) == 0:
         raise HTTPException(status_code=400, detail='Aucune valeur')
     if len(result) == 1:
@@ -31,6 +32,11 @@ def city_exists(con, city, table):
     result = execute_sql_query(con, query)
     return result[0] > 0
 
+def validate_city(con, city, table):
+    if not city_exists(con, city, table):
+        raise HTTPException(status_code=400, detail="The city indicated has no data")
+    return city_exists
+
 def is_number(nb_piece):
     if not isinstance(nb_piece, int):
         raise HTTPException(detail="La valeur doit être un chiffre")
@@ -45,8 +51,7 @@ class Type(Enum):
 #1 En tant qu'Agent je veux pouvoir consulter le revenu fiscal moyen des foyers de ma ville (Montpellier)
 @app.get("/revenu_fiscal/", description="Retourne le revenu fiscal moyen des  foyers de ma ville")
 async def revenu_fiscal_moyen(city: str):
-    if not city_exists(con, city, 'foyers_fiscaux'):
-        raise HTTPException(status_code=400, detail="La ville n'est pas correcte ou n'existe pas")
+    validate_city(con, city, "foyers_fiscaux")
     query = f"SELECT AVG(revenu_fiscal_moyen) FROM foyers_fiscaux WHERE UPPER(ville) LIKE '{city.upper()}%'"
     return execute_sql_query(con, query)
 
@@ -54,8 +59,7 @@ async def revenu_fiscal_moyen(city: str):
 #2 En tant qu'Agent je veux consulter les 10 dernières transactions dans ma ville (HENDAYE)
 @app.get("/transaction/", description="Permet de consulter les dernières x transactions de ma ville (x étant définit par limit)")
 async def transaction_city(limit:int, city: str):
-    if not city_exists(con, city, 'transactions_sample'):
-        raise HTTPException(status_code=400, detail="La ville n'est pas correcte ou n'existe pas")
+    validate_city(con, city, "transactions_sample")
     query = f"SELECT * FROM transactions_sample WHERE UPPER(ville) LIKE UPPER('{city}%') ORDER BY date_transaction DESC LIMIT '{limit}';"
     return execute_sql_query(con, query)
 
@@ -64,8 +68,7 @@ async def transaction_city(limit:int, city: str):
 
 @app.get("/acquisition/", description="Permet de connaitre le nombre d'acquisition de ma ville par année")
 async def acquisition(year:str, city: str):
-    if not city_exists(con, city, 'transactions_sample'):
-        raise HTTPException(status_code=400, detail="La valeur n'est pas correcte ou n'existe pas")
+    validate_city(con, city, "transactions_sample")
     year = validate_year(year)
     query = f"SELECT COUNT(*) FROM transactions_sample WHERE UPPER(ville) LIKE UPPER('{city}%') AND date_transaction LIKE '{year}%';"
     return execute_sql_query(con, query)
