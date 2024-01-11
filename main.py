@@ -42,7 +42,6 @@ class Type(Enum):
     APPARTEMENT = "Appartement"
 
 
-
 #1 En tant qu'Agent je veux pouvoir consulter le revenu fiscal moyen des foyers de ma ville (Montpellier)
 @app.get("/revenu_fiscal/", description="Retourne le revenu fiscal moyen des  foyers de ma ville")
 async def revenu_fiscal_moyen(city: str):
