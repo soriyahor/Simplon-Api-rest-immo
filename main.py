@@ -83,8 +83,7 @@ async def prix_m2(year:str, type:Type):
 #5 En tant qu'Agent je souhaite connaitre le nombre d'acquisitions de studios dans ma ville (Rennes) durant l'année 2022
 @app.get("/nb_acquisition/", description="Permet de connaitre le nombre d'acquisition en fonction du nombre de pièces, par logement et par année")
 async def nb_acquisition(year:str, nb_piece:int, type: Type, city:str):
-    if not city_exists(con, city, 'transactions_sample'):
-        raise HTTPException(status_code=400, detail="La valeur n'est pas correcte ou n'existe pas")
+    validate_city(con, city, "transactions_sample")
     year = validate_year(year)
     nb_piece = is_number(nb_piece)
     query= f"SELECT count(*)FROM transactions_sample WHERE type_batiment = '{type.value}' And n_pieces ='{nb_piece}' AND date_transaction LIKE '{year}%' AND UPPER(ville) = UPPER('{city}')"
@@ -93,8 +92,7 @@ async def nb_acquisition(year:str, nb_piece:int, type: Type, city:str):
 #7 En tant qu'Agent je souhaite connaitre le prix au m2 moyen pour les maisons vendues à Messimy l'année 2022 
 @app.get("/prix_m2_maison/", description="Permet de connaitre le prix par m² par type de logement, par ville et par année ")
 async def prix_m2_maison(year:str, type: Type, city: str):
-    if not city_exists(con, city, 'transactions_sample'):
-        raise HTTPException(status_code=400, detail="La ville n'est pas correcte ou n'existe pas")
+    validate_city(con, city, "transactions_sample")
     year = validate_year(year)
     query= f"SELECT ville, AVG(prix/surface_habitable) FROM transactions_sample WHERE UPPER(type_batiment) = UPPER('{type.value}') AND ville LIKE '{city}' AND date_transaction LIKE '{year}%';"
     return execute_sql_query(con, query)
